@@ -1,4 +1,4 @@
-//lab02-a1    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//lab02-a1    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
 //#define NDEBUG
 #include<cassert>
 #include<iostream>
@@ -63,7 +63,7 @@ int main() {
 }
 
 
-//lab01-b3    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//lab01-b3    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -91,7 +91,7 @@ int main() {
 }
 
 
-//lab01-b4    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//lab01-b4    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
 //#define NDEBUG
 #include<cassert>
 #include<iostream>
@@ -157,7 +157,7 @@ int main()
 }
 
 
-//lab01-b5    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    
+//lab01-b5    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  
 #include<iostream>
 #include<vector>
 using namespace std;
@@ -186,5 +186,239 @@ int main() {
             }
         }
         cout << endl;
+    }
+}
+
+
+//lab02-a2    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+using namespace std;
+void fun(int *a) {
+    int i=1;
+    int *p = a;
+    while (*p != -1) {
+        *p = i*i;
+        ++i;
+        p++;
+    }
+}
+int main() {
+    {
+        {
+            int a[100000]{};
+            a[25] = -1;
+            fun(a);
+
+            for (int i = 0; i < 25; ++i) {
+                assert(a[i] == (i + 1) * (i + 1));
+            }
+        }
+
+        {
+            int a[100000]{};
+            a[333] = -1;
+            fun(a);
+
+            for (int i = 0; i < 333; ++i) {
+                assert(a[i] == (i + 1) * (i + 1));
+            }
+        }
+
+        {
+            int a[100000]{};
+            a[2774] = -1;
+            fun(a);
+
+            for (int i = 0; i < 2774; ++i) {
+                assert(a[i] == (i + 1) * (i + 1));
+            }
+        }
+        cout << "SUCCESS!" << endl;
+    }
+    {
+        {
+            int a[100000]{};
+            a[1337] = -1;
+            fun(a);
+            for (int i=0;i<1337;++i) {
+                assert(a[i] == (i+1) * (i+1));
+            }
+        }
+        cout << "SUCCESS!" << endl;
+    }
+}
+
+
+//lab02-a3    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+using namespace std;
+int range(int *a, const int n) {
+    int *p = a;
+    int mi = *p;
+    int ma = *p;
+    for (int *p=a;p<a+n;p++) {
+        if (*p < mi) {
+            mi = *p;
+        }
+        if (*p > ma) {
+            ma = *p;
+        }
+    }
+    return ma-mi;
+}
+int main() {
+    {
+        {
+            int a[] = {1,2,3,4,5,6,7};               
+            assert(range(a, 7)==6);
+        }
+        {
+            int a[] = {-1,99,-5,4,28,-99,66,0};               
+            assert(range(a, 8)==198);
+        }        
+        {
+            int a[] = {1000,1000,1000,1000};               
+            assert(range(a, 4)==0);
+        }        
+        cout << "SUCCESS!" << endl;
+    }
+    {
+        {
+            int a[] = {5,1,8,14,-2,0};
+            assert(range(a,6)==16);
+        }
+        {
+            int a[] = {0,0,0,0};
+            assert(range(a,4)==0);
+        }
+        {
+            int a[] = {1,1,2,2,3,3,4,4};
+            assert(range(a,8)==3);
+        }
+        cout << "SUCCESS!" << endl;
+    }
+}
+
+
+//lab02-a4    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+using namespace std;
+bool is_pal(double *a, const int n) {
+    double *l = a;
+    double *r = a + n - 1;
+    while (l<r) {
+        if (*l != *r) {
+            return false;
+        }
+        ++l;
+        --r;
+    }
+    return true;
+}
+int main() {
+    {
+        {
+            double a[]{1,2,3,2,1};        
+            assert(is_pal(a, 5));
+        }
+        
+        {
+            double a[]{1,-2,3,4,999,4,3,-2,1};        
+            assert(is_pal(a, 9));
+        }
+        
+        {
+            double a[]{1,2,3,3,1};        
+            assert(!is_pal(a, 5));
+        }
+                
+        {
+            double a[]{-77,23,365,366,23,-77};        
+            assert(!is_pal(a, 6)); 
+        }        
+        cout << "SUCCESS!" << endl;
+    }
+    {   
+        {
+            double a[]{2,2,3,2,2};
+            assert(is_pal(a,5));
+        }
+        {
+            double a[]{1,2,3,4,4,3,2,1};
+            assert(is_pal(a,8));
+        }
+        {
+            double a[]{1,2,3,2};
+            assert(!is_pal(a,4));
+        }
+        {
+            double a[]{1,2,2,1,1};
+            assert(!is_pal(a,5));
+        }
+        cout << "SUCCESS!" << endl;
+    }
+}
+
+
+//lab02-b1    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+using namespace std;
+char *find_money(char *str) {
+    char *aim = "money";
+    for (char *p=str;*p!='\0';p++) {
+        char *s = p;
+        char *t = aim;
+        while (*t != '\0' and *s == *t) {
+            t++;
+            s++;
+        }
+        if (*t == '\0') {
+            return p;
+        }
+    }
+    return nullptr;
+}
+int main()
+{
+    {
+        {
+            char s[]{"thereisnomonyhere"};
+            assert(find_money(s) == nullptr);
+        }
+
+        {
+            char s[]{"woohoo, money!"};
+            assert(find_money(s) == s + 8);
+        }
+
+        {
+            char s[]{"wait, money here, money there, which one is correct?"};
+            assert(find_money(s) == s + 6);
+        }
+
+        cout << "SUCCESS!" << endl;
+    }
+    {   
+        {
+            char s[]{"i found maney"};
+            assert(find_money(s) == nullptr);
+        }
+        {
+            char s[]{"can you borrow me some money?"};
+            assert(find_money(s) == s + 23);
+        }
+        {
+            char s[]{"moneymoneymoney"};
+            assert(find_money(s) == s);
+        }
+        cout << "SUCCESS!" << endl;
     }
 }
