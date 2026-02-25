@@ -422,3 +422,80 @@ int main()
         cout << "SUCCESS!" << endl;
     }
 }
+
+
+//lab02-b2    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+using namespace std;
+int wordcount(char *str) {
+    int count = 0;
+    bool word = false;
+    while (*str != '\0') {
+        if (*str == ' ' or *str == '\t' or *str == '\n') {
+            word = false;
+        }
+        else if (!word) {
+            word = true;
+            count++;
+        }
+        str++;
+    }
+    return count;
+}
+int main() {
+    {
+        {
+            char s[100] = "a bcd ef gg!";
+            assert(wordcount(s) == 4);
+        }
+        
+        {
+            char s[100] = "captain, oh captain!!";
+            assert(wordcount(s) == 3);
+        }
+
+        {
+            char s[100] = "x xx xxx xxxxxxxxx x x x";    
+            assert(wordcount(s) == 7);
+        }
+
+        cout << "SUCCESS!" << endl;
+    }
+    {
+        {
+            char s[100] = "a a a a a";
+            assert(wordcount(s) == 5);
+        }
+        {
+            char s[100] = "a      a";
+            assert(wordcount(s) == 2);
+        }
+        {
+            char s[100] = "   ";
+            assert(wordcount(s) == 0);
+        }
+        cout << "SUCCESS!" << endl;
+    }
+}
+
+
+//lab02-b3
+#include<iostream>
+using namespace std;
+void transform(char *str) {
+    char replace = 'a';
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == '*') {
+            str[i] = replace;
+            replace++;
+        }
+    }
+}
+int main() {
+    char s[100] = "doro*ro*hyak*kimar*u";
+    transform(s);
+    cout << s << endl;
+    return 0;
+}
