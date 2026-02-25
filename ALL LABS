@@ -481,7 +481,7 @@ int main() {
 }
 
 
-//lab02-b3
+//lab02-b3    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
 #include<iostream>
 using namespace std;
 void transform(char *str) {
@@ -498,4 +498,82 @@ int main() {
     transform(s);
     cout << s << endl;
     return 0;
+}
+
+
+//lab02-b4    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+using namespace std;
+void onlyvowels(char *s, char *t){
+    int j = 0;
+    for (int i = 0; s[i] != '\0'; i++) {
+        char c = s[i];
+        if (c == 'a' or c == 'e' or c == 'i' or c == 'o' or c == 'u' or c == 'y' or
+        c == 'A' or c == 'E' or c == 'I' or c == 'O' or c == 'U' or c == 'Y') {
+            t[j++] = c;
+        }
+    }
+    t[j] = '\0';
+}
+int main() {
+    //Dulustan's tests
+    {
+        {
+            char s[]{"shinzowosasageyou"}, s1[100000]{}, ans[100000]{"iooaaeyou"};
+            onlyvowels(s, s1);
+
+            for (int i = 0; i < 99999; ++i) {
+                assert(s1[i] == ans[i]);
+            }
+        }
+
+        {
+            char s[]{"aeyouiaoeuioaueieieuieiueuaooa"}, s1[100000]{}, ans[100000]{"aeyouiaoeuioaueieieuieiueuaooa"};
+            onlyvowels(s, s1);
+
+            for (int i = 0; i < 99999; ++i) {
+                assert(s1[i] == ans[i]);
+            }
+        }
+
+        {
+            char s[]{"qrpvnbnhghhjjrttqkjkjkjkqqwwr"}, s1[100000]{}, ans[100000]{""};
+            onlyvowels(s, s1);
+
+            for (int i = 0; i < 99999; ++i) {
+                assert(s1[i] == ans[i]);
+            }
+        }
+
+        cout << "SUCCESS!" << endl;
+    }
+    {
+        {
+            char s[]{"success"}, s1[100000]{}, ans[100000]{"ue"};
+            onlyvowels(s, s1);
+
+            for (int i = 0; i < 99999; ++i) {
+                assert(s1[i] == ans[i]);
+            }
+        }
+        {
+            char s[]{"ez"}, s1[100000]{}, ans[100000]{"e"};
+            onlyvowels(s, s1);
+
+            for (int i = 0; i < 99999; ++i) {
+                assert(s1[i] == ans[i]);
+            }
+        }
+        {
+            char s[]{"gjhnb"}, s1[100000]{}, ans[100000]{""};
+            onlyvowels(s, s1);
+
+            for (int i = 0; i < 99999; ++i) {
+                assert(s1[i] == ans[i]);
+            }
+        }
+        cout << "SUCCESS!" << endl;
+    }
 }
