@@ -1,4 +1,5 @@
-//#define NDEBUG //lab02-a1
+//lab02-a1    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
 #include<cassert>
 #include<iostream>
 using namespace std;
@@ -19,8 +20,7 @@ void sort3(double *a, double *b, double *c) {
         *c = temp;
     }
 }
-int main()
-{
+int main() {
     {
         {
             double a=1, b=2, c=3;
@@ -59,5 +59,132 @@ int main()
             assert(a==-1000 and b==0 and c==1000);
         }
         cout << "SUCCESS!" << endl;
+    }
+}
+
+
+//lab01-b3    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+    int n, x, y;
+    cin >> n >> x >> y;
+    vector<vector<char>> doska(n, vector<char>(n, '.'));
+    doska[x][y] = 'K';
+    int dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};
+    int dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};
+    for (int i = 0; i < 8; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if (nx >= 0 && nx < n && ny >= 0 && ny < n) {
+            doska[nx][ny] = '*';
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << doska[i][j];
+            if (j < n - 1) cout << " ";
+        }
+        cout << endl;
+    }
+}
+
+
+//lab01-b4    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .
+//#define NDEBUG
+#include<cassert>
+#include<iostream>
+#include<vector>
+using namespace std;
+bool equal(const vector<vector<int>>& a, const vector<vector<int>>& b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    for (int i = 0; i < a.size(); i++) {
+        if (a[i].size() != b[i].size()) {
+            return false;
+        }
+        for (int j = 0; j < a[i].size(); j++) {
+            if (a[i][j] != b[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+vector<vector<int>> solve(const vector<vector<int>>& a) {
+    int n = a.size();
+    if (n == 0) return {};
+    vector<vector<int>> res(n, vector<int>(n));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            res[n - 1 - j][i] = a[i][j];
+        }
+    }
+    return res;
+}
+//main отвечает за ввод-вывод
+int main()
+{
+    {
+        vector<vector<int>> inp, outp; 
+        inp = {{1,2}, {3, 4}};
+        outp = {{2,4}, {1,3}};
+        assert(solve(inp) == outp);
+
+        inp = {{6,6,6}, {9,9,9},{1,2,3}};
+        outp = {{6,9,3}, {6,9,2},{6,9,1}};
+        assert(solve(inp) == outp);
+
+        inp = {{11,12,13,14},{15,16,17,18},{19,20,21,22},{23,24,25,26}};
+        outp = {{14,18,22,26},{13,17,21,25},{12,16,20,24},{11,15,19,23}};
+        assert(solve(inp) ==  outp);
+        
+        cout << "SUCCESS" << endl;
+    }
+    {
+        vector<vector<int>> inp, outp;
+        inp = {{3,3}, {4, 4}};
+        outp = {{3,4}, {3,4}};
+        assert(solve(inp) == outp);
+        
+        inp = {{1,1}, {1,1}};
+        outp = {{1,1}, {1,1}};
+        assert(solve(inp) == outp);
+        cout << "SUCCESS\n";
+    }
+}
+
+
+//lab01-b5    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    
+#include<iostream>
+#include<vector>
+using namespace std;
+int main() {
+    int n,x,y;
+    cin >> n >> x >> y;
+    vector<vector<char>> doska(n,vector<char>(n, '.'));
+    doska[x][y] = 'Q';
+    int dx[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    for (int dir=0;dir<8;dir++) {
+        for(int step = 1;;step++) {
+            int nx=x+dx[dir] * step;
+            int ny=y+dy[dir] * step;
+            if (nx < 0 or nx >= n or ny < 0 or ny >= n) {
+                break;
+            }
+            doska[nx][ny] = '*';
+        }
+    }
+    for (int i = 0;i<n;++i) {
+        for (int j=0;j<n;j++) {
+            cout << doska[i][j];
+            if (j < n - 1) {
+                cout << " ";
+            }
+        }
+        cout << endl;
     }
 }
