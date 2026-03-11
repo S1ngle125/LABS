@@ -156,3 +156,68 @@ int main() {
     cout << "Транспонированная матрица: " << endl;
     m3t.output();
 }
+
+
+
+#include<iostream>    //    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    LAB03-A5
+using namespace std;
+class Monster {
+    int hp;
+    int dmg;
+public:
+    Monster() {
+        hp = 100;
+        dmg = 10;
+        cout << "I am born!" << endl;
+    }
+    Monster(int health, int damage) {
+        hp = health;
+        dmg = damage;
+        cout << "I am born!" << endl;
+    }
+    ~Monster() {
+        cout << "I am dying, AAAAA!" << endl;
+    }
+    int gethp() const {
+        return hp;
+    }
+    void PVP(Monster &enemy) {
+        cout << "Наш монстр (HP: " << hp << ", DMG: " << dmg << ")" << endl;
+        cout << "Враг (HP: " << enemy.hp << ", DMG: " << enemy.dmg << ")" << endl;
+        int round = 1;
+        while (hp > 0 and enemy.hp > 0) {
+            cout << "РАУНД " << round << endl;
+            cout << "Наш монстр атакует и наносит " << dmg << " урона!" << endl;
+            enemy.hp -= dmg;
+            if (enemy.hp <= 0) {
+                enemy.hp = 0;
+                cout << "Враг получает урон и у него осталось " << enemy.hp << " здоровья!" << endl;
+                cout << "Враг проиграл!" << endl;
+                cout << "Наш монстр победил!" << endl;
+                break;
+            }
+            else {
+                cout << "Враг получает урон и у него осталось " << enemy.hp << " здоровья!" << endl;
+            }
+            cout << "Враг атакует и наносит " << enemy.dmg << " урона!" << endl;
+            hp -= enemy.dmg;
+            if (hp <= 0) {
+                hp = 0;
+                cout << "Наш монстр получает урон и у него осталось " << hp << " здоровья!" << endl;
+                cout << "Наш монстр проиграл!" << endl;
+                cout << "Враг победил!" << endl;
+                break;
+            }
+            else {
+                cout << "Наш монстр получает урон и у него осталось " << hp << " здоровья!" << endl;
+            }
+            round++;
+        }
+    }
+};
+int main() {
+    Monster m1;
+    Monster m2(200, 15);
+    cout << "Битва начинается!" << endl;
+    m2.PVP(m1);
+}
