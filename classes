@@ -67,3 +67,48 @@ int main() {
         students[i].output();
     }
 }
+
+
+#include<iostream>    //    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    LAB03-A3
+using namespace std;
+class Vector {
+    double x,y,z;
+public:
+    Vector() {
+        x = 0;
+        y = 0;
+        z = 0;
+    }
+    Vector(double x1, double y1, double z1) { //x1 - координата x, y1 - координата y и тд
+        x = x1;
+        y = y1;
+        z = z1;
+    }
+    double getx() {
+        return x;
+    }
+    double gety() {
+        return y;
+    }
+    double getz() {
+        return z;
+    }
+    void setx(double newx) {
+        x = newx;
+    }
+    void sety(double newy) {
+        y = newy;
+    }
+    void setz(double newz) {
+        z = newz;
+    }
+};
+int main() {
+    Vector v1;
+    Vector v2(2.5, 4.3, 6.8);
+    cout << "v2 coordinates: " << v2.getx() << ", " << v2.gety() << ", " << v2.getz() << endl;
+    v1.setx(7);
+    v1.sety(14);
+    v1.setz(21);
+    cout << "v1 coordinates: " << v1.getx() << ", " << v1.gety() << ", " << v1.getz() << endl;
+}
