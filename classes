@@ -9,7 +9,6 @@ class IT_Student {
     int grades[5];
     string lan;
     double gpa;
-public:
     void calcGPA() {
         double sum = 0;
         for (int i = 0; i < 5; i++) {
@@ -17,6 +16,8 @@ public:
         }
         gpa = sum / 5;
     }
+public:
+    IT_Student() : gpa(0.0) {}
     void input() {
         cout << "Enter your name: ";
         cin >> name;
@@ -27,7 +28,7 @@ public:
         cout << "Enter your group number (1 or 2): ";
         cin >> g_num;
         
-        cout << "Enter your grades(5): ";
+        cout << "Enter your grades(exactly 5): ";
         for (int i = 0; i < 5; ++i) {
             cin >> grades[i];
         }
@@ -49,6 +50,20 @@ public:
         cout << "GPA: " << gpa << endl;
         cout << "===============================" << endl;
     }
+    void updateGrades() {
+        cout << "Enter new grades(exactly 5) for " << surname << " " << name << ": ";
+        for (int i = 0; i < 5; ++i) {
+            cin >> grades[i];
+        }
+        calcGPA();
+        cout << "Grades updated successfully! New GPA for " << surname << " " << name << ": " << gpa << endl;
+    }
+    string getName() {
+        return name;
+    }
+    string getSurname() {
+        return surname;
+    }
 };
 int main() {
     vector<IT_Student> students;
@@ -66,7 +81,36 @@ int main() {
         cout << "Student №" << (i+1);
         students[i].output();
     }
+    int x;
+    cout << "Do you want to update grades? (1 or 0): ";
+    cin >> x;
+    if (x == 1) {
+        int w;
+        int count = 1;
+        cout << "How many students will have updated grades?: ";
+        cin >> w;
+        while (w > 0) {
+            cout << "====UPDATING GRADES====" << endl;
+            string name, surname;
+            cout << "Enter name of student №" << count << ": ";
+            cin >> name;
+            cout << "Enter surname of student №" << count << ": ";
+            cin >> surname;
+            for (int i = 0; i < 5; ++i) {
+                if (students[i].getName() == name and students[i].getSurname() == surname) {
+                    students[i].updateGrades();
+                    break;
+                }
+            }
+            w--;
+            count++;
+        }
+    }
+    else {
+        cout << endl;
+    }
 }
+
 
 
 #include<iostream>    //    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    LAB03-A3
