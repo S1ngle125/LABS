@@ -124,7 +124,6 @@ vector<vector<int>> solve(const vector<vector<int>>& a) {
     }
     return res;
 }
-//main отвечает за ввод-вывод
 int main()
 {
     {
@@ -152,7 +151,7 @@ int main()
         inp = {{1,1}, {1,1}};
         outp = {{1,1}, {1,1}};
         assert(solve(inp) == outp);
-        cout << "SUCCESS\n";
+        cout << "SUCCESS 2" << endl;
     }
 }
 
@@ -201,7 +200,7 @@ void fun(int *a) {
     while (*p != -1) {
         *p = i*i;
         ++i;
-        p++;
+        ++p;
     }
 }
 int main() {
