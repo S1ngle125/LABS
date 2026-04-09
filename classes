@@ -324,3 +324,175 @@ int main() {
     MonsterArmy army(3);
     army.BattleRoyale();
 }
+
+
+#include<iostream>    .    .    .    .    .        .    .    .    .    .    .    .    LAB03-B2
+#include<vector>
+#include<cmath>
+using namespace std;
+
+class Vector {
+    double x, y, z;
+public:
+    Vector() {
+        x = 0;
+        y = 0;
+        z = 0;
+    }
+    
+    Vector(double x1, double y1, double z1) {
+        x = x1;
+        y = y1;
+        z = z1;
+    }
+    
+    double getx() {
+        return x;
+    }
+    
+    double gety() {
+        return y;
+    }
+    
+    double getz() {
+        return z;
+    }
+    
+    void setx(double newx) {
+        x = newx;
+    }
+    
+    void sety(double newy) {
+        y = newy;
+    }
+    
+    void setz(double newz) {
+        z = newz;
+    }
+    
+    Vector operator+(const Vector& other) const {
+        return Vector(x + other.x, y + other.y, z + other.z);
+    }
+    
+    Vector operator*(double scalar) const {
+        return Vector(x * scalar, y * scalar, z * scalar);
+    }
+    
+    double operator*(const Vector& other) const {
+        return x * other.x + y * other.y + z * other.z;
+    }
+    
+    double length() const {
+        return sqrt((*this) * (*this));
+    }
+    
+    void print() const {
+        cout << "(" << x << ", " << y << ", " << z << ")";
+    }
+};
+Vector operator*(double scalar, const Vector& v) {
+    return v * scalar;
+}
+int maxlen(const vector<Vector>& vectors) {
+    if (vectors.empty()) return -1;
+    int maxIndex = 0;
+    double maxLength = vectors[0].length();
+    for (size_t i = 1; i < vectors.size(); ++i) {
+        double currentLength = vectors[i].length();
+        if (currentLength > maxLength) {
+            maxLength = currentLength;
+            maxIndex = i;
+        }
+    }
+    
+    return maxIndex;
+}
+int minlen(const vector<Vector>& vectors) {
+    if (vectors.empty()) return -1;
+    
+    int minIndex = 0;
+    double minLength = vectors[0].length();
+    
+    for (size_t i = 1; i < vectors.size(); ++i) {
+        double currentLength = vectors[i].length();
+        if (currentLength < minLength) {
+            minLength = currentLength;
+            minIndex = i;
+        }
+    }
+    
+    return minIndex;
+}
+
+int main() {                 
+    cout << "=== Тест базового функционала ===" << endl;
+    Vector v1;
+    Vector v2(2.5, 4.3, 6.8);
+    cout << "v2 coordinates: " << v2.getx() << ", " << v2.gety() << ", " << v2.getz() << endl;
+    v1.setx(7);
+    v1.sety(14);
+    v1.setz(21);
+    cout << "v1 coordinates: " << v1.getx() << ", " << v1.gety() << ", " << v1.getz() << endl;
+    
+    cout << "\n=== Тест оператора + ===" << endl;
+    Vector v3 = v1 + v2;
+    cout << "v1 + v2 = ";
+    v3.print();
+    cout << endl;
+    
+    cout << "\n=== Тест оператора * (вектор * скаляр) ===" << endl;
+    Vector v4 = v1 * 2.5;
+    cout << "v1 * 2.5 = ";
+    v4.print();
+    cout << endl;
+    
+    cout << "\n=== Тест оператора * (скаляр * вектор) ===" << endl;
+    Vector v5 = 3.0 * v2;
+    cout << "3.0 * v2 = ";
+    v5.print();
+    cout << endl;
+    
+    cout << "\n=== Тест скалярного произведения ===" << endl;
+    double dot = v1 * v2;
+    cout << "v1 * v2 (dot product) = " << dot << endl;
+    
+    cout << "\n=== Тест метода length() ===" << endl;
+    cout << "|v1| = " << v1.length() << endl;
+    cout << "|v2| = " << v2.length() << endl;
+    cout << "|v3| = " << v3.length() << endl;
+    
+    cout << "\n=== Тест функций maxlen и minlen ===" << endl;
+    vector<Vector> vectors;
+    
+    vectors.push_back(Vector(1, 0, 0));
+    vectors.push_back(Vector(3, 4, 0)); 
+    vectors.push_back(Vector(1, 1, 1));
+    vectors.push_back(Vector(5, 12, 0));                         
+    
+    for (size_t i = 0; i < vectors.size(); ++i) {
+        cout << "Vector " << i << ": ";
+        vectors[i].print();
+        cout << ", length = " << vectors[i].length() << endl;
+    }
+    
+    int longest = maxlen(vectors);
+    int shortest = minlen(vectors);
+    cout << "\nСамый длинный вектор: индекс " << longest;
+    cout << " (длина = " << vectors[longest].length() << ")" << endl;
+    cout << "Самый короткий вектор: индекс " << shortest;
+    cout << " (длина = " << vectors[shortest].length() << ")" << endl;
+    cout << "\n=== Тест с одинаковыми длинами ===" << endl;
+    vector<Vector> vectors2;
+    vectors2.push_back(Vector(3, 4, 0));
+    vectors2.push_back(Vector(5, 0, 0));
+    vectors2.push_back(Vector(0, 5, 0));
+    
+    for (size_t i = 0; i < vectors2.size(); ++i) {
+        cout << "Vector " << i << ": ";
+        vectors2[i].print();
+        cout << ", length = " << vectors2[i].length() << endl;
+    }
+    
+    cout << "Самый длинный: индекс " << maxlen(vectors2) << endl;
+    cout << "Самый короткий: индекс " << minlen(vectors2) << endl;
+}
