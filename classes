@@ -265,3 +265,62 @@ int main() {
     cout << "Битва начинается!" << endl;
     m2.PVP(m1);
 }
+
+
+#include<iostream>    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    . LAB03-B1
+#include<vector>
+using namespace std;
+class Monster {
+  int health;
+  int damage;
+ public:
+    Monster() : health(100), damage(10) {}
+    Monster(int h, int d) : health(h), damage(d) {}
+    void attack (Monster& other) {
+        other.health -= damage;
+    }
+    bool isAlive() {
+        return health > 0;
+    }
+};
+class MonsterArmy  {
+    vector<Monster> monsters;
+public:
+    MonsterArmy() {}
+    MonsterArmy(int count) {
+        for (int i = 0; i < count; ++i) {
+            monsters.push_back(Monster(100 + i*10, 10 + i*2));
+        }
+    }
+    MonsterArmy(const Monster& m) {
+        monsters.push_back(m);
+    }
+    
+    void BattleRoyale() {
+        if (monsters.size() == 0) {
+            cout << "No monsters" << endl;
+        }
+        else {
+            vector<Monster> fighters = monsters;
+            int winner = 0;
+            for (int i = 1; i < fighters.size(); i++) {
+                cout << "Fight: " << winner << " vs " << i << endl;
+                while (fighters[winner].isAlive() && fighters[i].isAlive()) {
+                    fighters[winner].attack(fighters[i]);
+                    if (fighters[i].isAlive()) {
+                      fighters[i].attack(fighters[winner]);
+                  }
+                }
+                if (!fighters[winner].isAlive()) {
+                    winner = i;
+                }
+                cout << "Winner: " << winner << endl;
+            }
+        cout << "FINAL WINNER: Monster " << winner << endl;
+        }
+    }
+};
+int main() {
+    MonsterArmy army(3);
+    army.BattleRoyale();
+}
