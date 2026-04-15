@@ -496,3 +496,130 @@ int main() {
     cout << "Самый длинный: индекс " << maxlen(vectors2) << endl;
     cout << "Самый короткий: индекс " << minlen(vectors2) << endl;
 }
+
+
+
+#include <iostream>    .    .    .    .    .    .    .    .    .    .    .    .    .    LAB03-B3+B4
+#include <vector>
+#include <cmath>
+using namespace std;
+class Vector {
+protected:
+    double x;
+    double y;
+public:
+    Vector() : x(0), y(0) {}
+    Vector(double x1, double y1) : x(x1), y(y1) {}
+    double getx() const { 
+        return x; 
+    }
+    double gety() const { 
+        return y;
+    }
+    void setx(double val) { x = val; }
+    void sety(double val) { y = val; }
+    Vector operator+(const Vector& other) const {
+        return Vector(x + other.x, y + other.y);
+    }
+    Vector operator*(double scalar) const {
+        return Vector(x * scalar, y * scalar);
+    }
+    double operator*(const Vector& other) const {
+        return x * other.x + y * other.y;
+    }
+    double length() const {
+        return sqrt((*this) * (*this));
+    }
+    void display() const {
+        cout << "(" << x << ", " << y << ")";
+    }
+};
+int maxlen(const std::vector<Vector>& vectors) {
+    if (vectors.empty()) return -1;
+    int maxIndex = 0;
+    double maxLength = vectors[0].length();
+    for (size_t i = 1; i < vectors.size(); ++i) {
+        double currentLength = vectors[i].length();
+        if (currentLength > maxLength) {
+            maxLength = currentLength;
+            maxIndex = i;
+        }
+    }
+    return maxIndex;
+}
+int minlen(const std::vector<Vector>& vectors) {
+    if (vectors.empty()) return -1;
+    int minIndex = 0;
+    double minLength = vectors[0].length();
+    for (size_t i = 1; i < vectors.size(); ++i) {
+        double currentLength = vectors[i].length();
+        if (currentLength < minLength) {
+            minLength = currentLength;
+            minIndex = i;
+        }
+    }
+    return minIndex;
+}
+class Circle : public Vector {
+private:
+    double radius;
+public:
+    Circle() : Vector(0, 0), radius(1) {}
+    Circle(double x1, double y1, double r) : Vector(x1, y1), radius(r) {}
+    Circle(double r) : Vector(0, 0), radius(r) {}
+    Circle(const Vector& center) : Vector(center.getx(), center.gety()), radius(1) {}
+    double getRadius() const { 
+        return radius; 
+    }
+    double getCenterX() const { 
+        return getx(); 
+    }
+    double getCenterY() const { 
+        return gety(); 
+    }
+    Vector getCenter() const { return Vector(getx(), gety()); }
+    void setRadius(double r) { 
+        radius = r;
+    }
+    double getArea() const {
+        return 3.1415 * radius * radius;
+    }
+    double getRound() const {
+        return 2 * 3.1415 * radius;
+    }
+    double getDiameter() const {
+        return 2 * radius;
+    }
+    Circle operator+(const Circle& other) const {
+        double totalArea = this->getArea() + other.getArea();
+        double newRadius = sqrt(totalArea / 3.1415);
+        Vector newCenter = this->getCenter() + other.getCenter();
+        return Circle(newCenter.getx(), newCenter.gety(), newRadius);
+    }
+    void print() const {
+        cout << "Окружность:" << endl;
+        cout << "  Центр: (" << getx() << ", " << gety() << ")" << endl;
+        cout << "  Радиус: " << radius << endl;
+        cout << "  Диаметр: " << getDiameter() << endl;
+        cout << "  Длина окружности: " << getRound() << endl;
+        cout << "  Площадь: " << getArea() << endl;
+    }
+};
+int main() {
+    cout << "=== ТЕСТ КЛАССА CIRCLE ===" << endl;
+    Circle c1;
+    Circle c2(3, 4, 5);
+    Circle c3(2.5);
+    Circle c4(Vector(1, 1));
+    cout << "c1 дефолтный: " << endl;
+    c1.print();
+    cout << "c2 (x, y, r): " << endl;
+    c2.print();
+    cout << "c3 только радиус: " << endl;
+    c3.print();
+    cout << "c4 только центр: " << endl;
+    c4.print();
+    Circle c5 = c2 + c3;
+    cout << "c5 = c2 + c3:" << endl;
+    c5.print();
+}
