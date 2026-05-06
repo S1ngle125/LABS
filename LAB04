@@ -1,0 +1,59 @@
+https://www.onlinegdb.com/online_c++_compiler#
+
+#include<fstream>  // .  .  .  .  .  .  .  .  .  .  .  .  ..  .  .  .  .  .  ..  .  .    .  ..    .  .  . LAB04-A1
+#include<sstream>
+#include<iostream>
+#include<ctime>
+#include<cstdlib>
+using namespace std;
+string random_n(int count, int minv, int maxv) {
+    string result = "";
+    for (int i = 0; i < count; ++i) {
+        int random_number = minv + rand() % (maxv - minv + 1);
+        result += to_string(random_number);
+        if (i < 4) {
+            result += " ";
+        }
+    }
+    return result;
+}
+int main(){
+    srand(time(0));
+    for(int i = 1; i < 4; ++i) {
+        cout << "Creating file prob" << i << "_in.txt" << endl;
+        ofstream create("prob" + to_string(i) + "_in.txt");
+        create << random_n(5,1,100) << endl;
+        create << random_n(5,1,100) << endl;
+        create << random_n(5,1,100) << endl;
+        create.close();
+        ifstream infile("prob" + to_string(i) + "_in.txt");
+        ofstream outfile("prob" + to_string(i) + "_out.txt");
+        if (!infile.is_open()) {
+            cerr << "Error" << endl;
+        }
+        string line;
+        while(getline(infile, line)) {
+            if (line.empty()) {
+                continue;
+            }
+            stringstream ss(line);
+            int num;
+            int ma = -99999;
+            bool has_number = false;
+            while (ss >> num) {
+                has_number = true;
+                if (num > ma) {
+                    ma = num;
+                }
+            }
+            if (has_number) {
+                outfile << ma << endl;
+                cout << "Max in " << line << ": " << ma << endl;
+            }
+        }
+        infile.close();
+        outfile.close();
+        cout << "File number " << i << " is ready!" << endl;
+    }
+    cout << "All files are ready!" << endl;
+}
