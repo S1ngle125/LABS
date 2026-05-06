@@ -162,3 +162,37 @@ int main() {
     gen.generate(20, 4);
     gen.generate(12, 3);
 }
+
+
+
+#include <iostream>    //    .    .    .    .    .    .    ..    .    .    .    ..    .    .    .    .    ..        .    LAB04-A4
+#include <fstream>
+#include <vector>
+#include <random>
+#include <ctime>
+using namespace std;
+vector<int> random_walk(int up, int n) {
+    static mt19937 gen(time(0));
+    uniform_int_distribution<int> dist(1, 100);
+    vector<int> v(n);
+    for (int i = 1; i < n; i++)
+        v[i] = v[i-1] + (dist(gen) <= up ? 1 : -1);
+    return v;
+}
+int main() {
+    ofstream f("RandomWalkReport.txt");
+    int upV[] = {30, 50, 90}, nV[] = {10, 100, 1000};
+    for (int up : upV) {
+        for (int n : nV) {
+            auto v = random_walk(up, n);
+            f << "up=" << up << "% n=" << n << "\n";
+            f << "v: ";
+            for (int x : v) f << x << " ";
+            f << "\nпоследний=" << v.back() << "\n";
+            int upCnt = 0;
+            for (int i = 1; i < n; i++) 
+                if (v[i] == v[i-1] + 1) upCnt++;
+            f << "p=" << (double)upCnt/(n-1)*100 << "% (теор " << up << "%)\n\n";
+        }
+    }
+}
