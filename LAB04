@@ -57,3 +57,108 @@ int main(){
     }
     cout << "All files are ready!" << endl;
 }
+
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    LAB04-A2
+#include <fstream>
+#include <string>
+#include <sstream>
+using namespace std;
+void file_process(const string& input, const string& output) {
+    ifstream infile(input);
+    ofstream outfile(output);
+    string line;
+    while (getline(infile, line)) {
+        stringstream ss(line);
+        string word;
+        bool firstWord = true;
+        while (ss >> word) {
+            if (!firstWord) outfile << " ";
+            firstWord = false;
+            if (word.length() <= 1) {
+                outfile << word;
+            } 
+            else {
+                outfile << word[0];
+                for (int i = 1; i < word.length(); i++) {
+                    outfile << "*" << word[i];
+                }
+            }
+        }
+        outfile << endl;
+    }
+    infile.close();
+    outfile.close();
+}
+void file_create(const string& filename, const string& inside) {
+    ofstream file(filename);
+    file << inside;
+    file.close();
+}
+int main() {
+    file_create("prob2_in.txt", "I will be a Pirate King\n");
+    file_create("prob3_in.txt", "Hello World\n");
+    file_create("prob4_in.txt", "44 555 6666\n");
+    file_process("prob2_in.txt", "prob2_out.txt");
+    file_process("prob3_in.txt", "prob3_out.txt");
+    file_process("prob4_in.txt", "prob4_out.txt");
+}
+
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    .    .    .    .    .    ..    .    .    .    LAB04-A3
+#include <fstream>
+#include <vector>
+#include <string>
+#include <random>
+#include <ctime>
+using namespace std;
+class Nonsense_Gen {
+private:
+    vector<string> dictionary;
+    int counter;
+    mt19937 rng;
+public:
+    Nonsense_Gen(const string& dictFile = "Cool_dictionary.txt") : counter(1) {
+        rng.seed(time(nullptr));
+        ifstream dictStream(dictFile);
+        string word;
+        while (dictStream >> word) {
+            dictionary.push_back(word);
+        }
+        dictStream.close();
+    }
+    void generate(int wordsPerFile = 10, int wordsPerLine = 5) {
+        if (dictionary.empty()) return;
+        string filename = "nonsense_" + to_string(counter) + ".txt";
+        ofstream outFile(filename);
+        uniform_int_distribution<int> dist(0, dictionary.size() - 1);
+        for (int i = 0; i < wordsPerFile; i++) {
+            outFile << dictionary[dist(rng)];
+            if (i < wordsPerFile - 1) {
+                if ((i + 1) % wordsPerLine == 0) {
+                    outFile << "\n";
+                } 
+                else {
+                    outFile << " ";
+                }
+            }
+        }
+        outFile << "\n";
+        outFile.close();
+        counter++;
+    }
+    int getCounter() const { 
+        return counter; 
+    }
+};
+int main() {
+    ofstream dict("Cool_dictionary.txt");
+    dict << "C++ C RUST PYTHON ASM PHP RUBY PASCAL 1C C# JS JAVA";
+    dict.close();
+    Nonsense_Gen gen;
+    gen.generate(15, 5);
+    gen.generate(20, 4);
+    gen.generate(12, 3);
+}
