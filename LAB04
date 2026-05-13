@@ -196,3 +196,121 @@ int main() {
         }
     }
 }
+
+
+
+
+NOT FINISHED
+#include <fstream>    .    .    .    .    .    .    .    .    .    .    . LAB04-B1-B2
+#include <iostream>
+#include <string>
+#include <vector>
+#include <sstream>
+using namespace std;
+class TextReader {
+public:
+    ifstream inputFile;
+    ofstream outputFile;
+    TextReader() {}
+    TextReader(const string& inputFilename, const string& outputFilename) {
+        inputFile.open(inputFilename);
+        if (!inputFile.is_open()) {
+            cerr << "Error: Cannot open input file!" << endl;
+            exit(1);
+        }
+        
+        outputFile.open(outputFilename);
+        if (!outputFile.is_open()) {
+            cerr << "Error: Cannot open output file!" << endl;
+            exit(1);
+        }
+    }
+    ~TextReader() {
+        if (inputFile.is_open()) {
+            inputFile.close();
+            cout << "Input file closed!" << endl;
+        }
+        if (outputFile.is_open()) {
+            outputFile.close();
+            cout << "Output file closed!" << endl;
+        }
+    }
+    vector<string> words() {
+        vector<string> wordList;
+        string line;
+        inputFile.clear();
+        inputFile.seekg(0);
+        while (getline(inputFile, line)) {
+            stringstream ss(line);
+            string word;
+            while (ss >> word) {
+                wordList.push_back(word);
+            }
+        }
+        return wordList;
+    }
+    void caesar_encrypt(int x) {
+        inputFile.clear();
+        inputFile.seekg(0);
+        string line;
+        while (getline(inputFile, line)) {
+            string encryptedLine = "";
+            for (char ch : line) {
+                if (ch >= 'a' && ch <= 'z') {
+                    char encryptedChar = ((ch - 'a' + x) % 26) + 'a';
+                    encryptedLine += encryptedChar;
+                } 
+                else {
+                    encryptedLine += ch;
+                }
+            }
+            outputFile << encryptedLine << endl;
+        }
+    }
+};
+int main() {
+    cout << "TEST 1: Creating input file" << endl;
+    ofstream makeFile("test.txt");
+    makeFile << "hello world" << endl;
+    makeFile << "this is test" << endl;
+    makeFile << "caesar cipher example" << endl;
+    makeFile.close();
+    cout << "File 'test.txt' created successfully!\n" << endl;
+    cout << "TEST 2: Testing words() method" << endl;
+    TextReader reader1("test.txt", "dummy.txt");
+    vector<string> allWords = reader1.words();
+    cout << "All words from file:" << endl;
+    for (int i = 0; i < allWords.size(); i++) {
+        cout << "  " << i + 1 << ". " << allWords[i] << endl;
+    }
+    reader1.outputFile.close();
+    cout << endl;
+    cout << "TEST 3: Testing caesar_encrypt() with x = 3" << endl;
+    TextReader reader2("test.txt", "encrypted.txt");
+    reader2.caesar_encrypt(3);
+    reader2.outputFile.close();
+    cout << "Original text (test.txt):" << endl;
+    ifstream original("test.txt");
+    string line;
+    while (getline(original, line)) {
+        cout << "  " << line << endl;
+    }
+    original.close();
+    cout << "Encrypted text (encrypted.txt) with shift 3:" << endl;
+    ifstream encrypted("encrypted.txt");
+    while (getline(encrypted, line)) {
+        cout << "  " << line << endl;
+    }
+    encrypted.close();
+    cout << endl;
+    cout << "TEST 4: Testing caesar_encrypt() with x = 1" << endl;
+    TextReader reader3("test.txt", "encrypted_shift1.txt");
+    reader3.caesar_encrypt(1);
+    reader3.outputFile.close();
+    ifstream enc1("encrypted_shift1.txt");
+    cout << "Encrypted with shift 1:" << endl;
+    while (getline(enc1, line)) {
+        cout << "  " << line << endl;
+    }
+    enc1.close();
+}
