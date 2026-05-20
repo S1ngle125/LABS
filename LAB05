@@ -1,0 +1,42 @@
+#include <iostream>  //  .  .  .  .  .  .  .  .  .  .  .  LAB05-A2
+#include <chrono>
+#include <fstream>
+#include <iomanip>
+#include <cassert>
+using namespace std;
+using namespace chrono;
+long long ackermann(int m, int n) {
+    if (m == 0) return n + 1;
+    if (n == 0) return ackermann(m - 1, 1);
+    return ackermann(m - 1, ackermann(m, n - 1));
+}
+void test() {
+    assert(ackermann(0, 0) == 1);
+    assert(ackermann(0, 1) == 2);
+    assert(ackermann(1, 0) == 2);
+    assert(ackermann(1, 1) == 3);
+    assert(ackermann(2, 1) == 5);
+    assert(ackermann(2, 2) == 7);
+    assert(ackermann(3, 0) == 5);
+    assert(ackermann(3, 1) == 13);
+    assert(ackermann(3, 2) == 29);
+    cout << "All tests passed!\n";
+}
+int main() {
+    test();
+    int params[6][2] = {{0,7}, {1,7}, {2,7}, {3,7}, {3,6}, {3,5}};
+    ofstream f("akerman_report.txt");
+    f << "Ackermann Function Report\n";
+    f << "m\tn\tA(m,n)\tTime(ms)\n";
+    for (auto& p : params) {
+        int m = p[0], n = p[1];
+        auto start = high_resolution_clock::now();
+        long long res = ackermann(m, n);
+        auto end = high_resolution_clock::now();
+        auto ms = duration_cast<milliseconds>(end - start).count();
+        f << m << "\t" << n << "\t" << res << "\t" << ms << "\n";
+        cout << "A(" << m << "," << n << ") = " << res << " (" << ms << " ms)\n";
+    }
+    f.close();
+    cout << "Report saved to akerman_report.txt";
+}
