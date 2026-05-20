@@ -200,12 +200,15 @@ int main() {
 
 
 
-NOT FINISHED
-#include <fstream>    .    .    .    .    .    .    .    .    .    .    . LAB04-B1-B2
+#include <fstream>    //    .    .    .    .    .    .    .    .    .    .    .    .    LAB04-B PART
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
+#include <chrono>
+#include <cctype>
+#include <random>
+#include <algorithm>
 using namespace std;
 class TextReader {
 public:
@@ -267,6 +270,100 @@ public:
             outputFile << encryptedLine << endl;
         }
     }
+    void cringe_output() {
+        inputFile.clear();
+        inputFile.seekg(0);
+        stringstream buffer;
+        string line;
+        while (getline(inputFile, line)) {
+            buffer << line << " ";
+        }
+        string text = buffer.str();
+        string cleanText;
+        for (char c : text) {
+            if (isalpha(c) || c == ' ' || c == '.') {
+                cleanText += c;
+            }
+        }
+        vector<string> allWords;
+        stringstream wordStream(cleanText);
+        string word;
+        while (wordStream >> word) {
+            allWords.push_back(word);
+        }
+        bool upper = true;
+        for (size_t i = 0; i < allWords.size(); i++) {
+            string& w = allWords[i];
+            for (size_t j = 0; j < w.length(); j++) {
+                if (upper) {
+                    w[j] = toupper(w[j]);
+                } else {
+                    w[j] = tolower(w[j]);
+                }
+                upper = !upper;
+            }
+            if (w.back() == '.') {
+                upper = true;
+            }
+        }
+        outputFile.close();
+        outputFile.open("cringe_output.txt");
+        int wordsInLine = 0;
+        for (int i = 0; i < allWords.size(); i++) {
+            if (allWords[i] == ".") {
+                outputFile << ".";
+                continue;
+            }
+            outputFile << allWords[i];
+            wordsInLine++;
+            if (i + 1 < allWords.size() && allWords[i + 1] != ".") {
+                outputFile << " ";
+            }
+            if (wordsInLine == 7) {
+                outputFile << endl;
+                wordsInLine = 0;
+            }
+        }
+        if (wordsInLine != 0) {
+            outputFile << endl;
+        }
+    }
+    void cringe_shuffle() {
+        inputFile.clear();
+        inputFile.seekg(0);
+        vector<string> wordList;
+        string word;
+        string line;
+        while (getline(inputFile, line)) {
+            stringstream ss(line);
+            while (ss >> word) {
+                string cleanWord;
+                for (char c : word) {
+                    if (isalpha(c)) {
+                        cleanWord += c;
+                    }
+                }
+                if (!cleanWord.empty()) {
+                    wordList.push_back(cleanWord);
+                }
+            }
+        }
+        if (wordList.empty()) {
+            cerr << "No words in input file!" << endl;
+            return;
+        }
+        unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+        shuffle(wordList.begin(), wordList.end(), default_random_engine(seed));
+        outputFile.close();
+        outputFile.open("cringe_shuffle.txt");
+        for (int i = 0; i < wordList.size(); i++) {
+            outputFile << wordList[i];
+            if (i < wordList.size() - 1) {
+                outputFile << " ";
+            }
+        }
+        outputFile << endl;
+    }
 };
 int main() {
     cout << "TEST 1: Creating input file" << endl;
@@ -274,8 +371,10 @@ int main() {
     makeFile << "hello world" << endl;
     makeFile << "this is test" << endl;
     makeFile << "caesar cipher example" << endl;
+    makeFile << "cringe shuffle moment" << endl;
     makeFile.close();
     cout << "File 'test.txt' created successfully!\n" << endl;
+    
     cout << "TEST 2: Testing words() method" << endl;
     TextReader reader1("test.txt", "dummy.txt");
     vector<string> allWords = reader1.words();
@@ -285,6 +384,7 @@ int main() {
     }
     reader1.outputFile.close();
     cout << endl;
+    
     cout << "TEST 3: Testing caesar_encrypt() with x = 3" << endl;
     TextReader reader2("test.txt", "encrypted.txt");
     reader2.caesar_encrypt(3);
@@ -303,6 +403,7 @@ int main() {
     }
     encrypted.close();
     cout << endl;
+    
     cout << "TEST 4: Testing caesar_encrypt() with x = 1" << endl;
     TextReader reader3("test.txt", "encrypted_shift1.txt");
     reader3.caesar_encrypt(1);
@@ -313,4 +414,27 @@ int main() {
         cout << "  " << line << endl;
     }
     enc1.close();
+    
+    cout << "TEST 5: Testing cringe_output() method" << endl;
+    TextReader reader4("test.txt", "cringe_output.txt");
+    reader4.cringe_output();
+    reader4.outputFile.close();
+    cout << "Result of cringe_output (cringe_output.txt):" << endl;
+    ifstream cringeOut("cringe_output.txt");
+    while (getline(cringeOut, line)) {
+        cout << "  " << line << endl;
+    }
+    cringeOut.close();
+    cout << endl;
+    
+    cout << "TEST 6: Testing cringe_shuffle() method" << endl;
+    TextReader reader5("test.txt", "cringe_shuffle.txt");
+    reader5.cringe_shuffle();
+    reader5.outputFile.close();
+    cout << "Result of cringe_shuffle (cringe_shuffle.txt):" << endl;
+    ifstream cringeShuffle("cringe_shuffle.txt");
+    getline(cringeShuffle, line);
+    cout << "  " << line << endl;
+    cringeShuffle.close();
+    cout << endl;
 }
