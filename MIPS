@@ -1,0 +1,100 @@
+4.1  .  ..  .  .  ..  .  .    ..  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  
+.text
+.globl main
+main:
+	lw $t1, g # $t1 = g
+	lw $t2, h # $t2 = h
+	lw $t3, x # $t3 = x
+	add $t0, $t1, $t2 # f = g + h
+	sub $t0, $t0, $t3 # f = g + h - x
+	sw $t0, f # $t0 = f
+.data
+f: .word 0
+g: .word 65
+h: .word 5
+x: .word 3
+
+4.2  ..  .    .  .  .  .  .  .  .  .  .  .  .  ..  .  .  .  .    ..  .  .  
+.text
+.globl main
+main:
+	add $s0, $t0, $t1 # a = x + y
+	add $s0, $s1, $s0 # a = b + a
+
+Code in C language: a = x + y + b;
+
+4.3a  .  .  .  .  .  .  ..    ..  .  .  .  .  .  .    .  .  .  ..  .  .    .
+.text
+.globl main
+main:
+	lw $s1, x # $s1 = x
+	lw $s2, y # $s2 = y
+	lw $s3, z # $s3 = z
+	add $t0, $s1, $s2 # $t0 = x + y
+	add $t1, $s3, $s3 # $t1 = 2 * z
+	sub $s0, $t0, $t1 # f = x + y - 2 * z
+	sw $s0, f # $s0 = f
+.data
+f: .word 0
+x: .word 5
+y: .word 4
+z: .word 3
+
+4.3b  .  .  .  ..  .    ..  .  .  ..  ..  .  .  .    ..  .  
+.text
+.globl main
+main:
+	la $s6, A # $s6 = A
+	lw $t0, 28($s6) # t0 = A[7]
+	li $s1, 4 # x = 4
+	add $t1, $s1, $t0 # t1 = x + A[7]
+	addi $s0, $t1, 29 # $s0 = t1 + 29
+	sw $s0, f # $s0 = f
+.data
+f: .word 0
+A: .word 1 2 3 4 5 6 7 10 8 9
+
+4.3c  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+.text
+.globl main
+main:
+	la $s6, A # $s6 = A
+	lw $t0, 396($s6) # t0 = A[99]
+	addi $t1, $t0, -99 # $t1 = A[99] - 99
+	sw $t1, 400($s6) # $t1 = A[100]
+.data
+A: .word 200:100
+
+4.3d  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+.text
+.globl main
+main:
+	la $s6, A # $s6 = A
+	la $s7, B # $s7 = B
+	lw $t0, 40($s6) # $t0 = A[10]
+	lw $t1, 36($s6) # $t1 = A[9]
+	sub $t2, $t0, $t1 # $t2 = A[10] - A[9]
+	addi $t2, $t2, 1 # $t2 = A[10] - A[9] + 1
+	sw $t2, 40($s7) # $t2 = B[10]
+.data
+A: .word 0 0 0 0 0 0 0 0 0 9 18
+B: .word 0:11
+
+4.4  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+.text
+.globl main
+main:
+	la $s6, A # $s6 = A
+ 	la $s7, B # $s7 = B
+	lw $s3, i_word # $s3 = i
+	lw $s4, j_word # $s4 = j
+	sub $t0, $s3, $s4 # $t0 = i - j
+	sll $t0, $t0, 2 # $t0 = (i - j) * 4
+	add $t0, $s6, $t0 # $t0 = A[i - j]
+	lw $t1, 0($t0) # $t1 = A[8]
+	sw $t1, 32($s7) # $t1 = B[8]
+.data
+i_word: .word 5
+j_word: .word 2
+A: .word 1 2 3 4 5 6 7 8
+B: .word 1:9
