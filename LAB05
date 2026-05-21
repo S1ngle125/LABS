@@ -40,3 +40,82 @@ int main() {
     f.close();
     cout << "Report saved to akerman_report.txt";
 }
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    LAB05-A3
+#include <fstream>
+#include <chrono>
+using namespace std;
+using namespace chrono;
+const long long MOD = 1000000007;
+long long pow_slow(long long x, int k) {
+    if (k == 0) return 1;
+    return (x * pow_slow(x, k - 1)) % MOD;
+}
+long long pow_fast(long long x, int k) {
+    if (k == 0) return 1;
+    if (k % 2 == 1) return (x * pow_fast(x, k - 1)) % MOD;
+    long long y = pow_fast(x, k / 2);
+    return (y * y) % MOD;
+}
+int main() {
+    int k_val[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000};
+    ofstream f("pow_report.txt");
+    f << "k\tpow_slow(ms)\tpow_fast(ms)\n";
+    for (int k : k_val) {
+        auto start = high_resolution_clock::now();
+        pow_fast(2, k);
+        auto end = high_resolution_clock::now();
+        double fast_t = duration_cast<microseconds>(end - start).count() / 1000;
+        double slow_t = -1;
+        if (k <= 100000) {
+            start = high_resolution_clock::now();
+            pow_slow(2, k);
+            end = high_resolution_clock::now();
+            slow_t = duration_cast<microseconds>(end - start).count() / 1000;
+        }
+        f << k << "\t";
+        if (slow_t >= 0) f << slow_t << "\t";
+        else f << "N/A\t";
+        f << fast_t << "\n";
+    }
+    f << "Сложность: pow_slow = O(k), pow_fast = O(log k)\n";
+    f << "Вывод: pow_fast намного быстрее для больших k";
+    cout << "Готово в pow_report.txt";
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    .    .    .    .    LAB05-A4
+#include <fstream>
+#include <chrono>
+using namespace std;
+using namespace chrono;
+void hanoi(int n, char from, char to, char aux, ofstream& f) {
+    if (n == 1) {
+        f << "disk 1 from " << from << " to " << to << endl;
+        return;
+    }
+    hanoi(n - 1, from, aux, to, f);
+    f << "disk " << n << " from " << from << " to " << to << endl;
+    hanoi(n - 1, aux, to, from, f);
+}
+int main() {
+    int disks[] = {3, 5, 10, 15, 20};
+    ofstream time_file("hanoi_time.txt");
+    time_file << "n\ttime(ms)\tmoves\n";
+    for (int n : disks) {
+        string filename = "hanoi_" + to_string(n) + ".txt";
+        ofstream f(filename);
+        auto start = high_resolution_clock::now();
+        hanoi(n, 'A', 'C', 'B', f);
+        auto end = high_resolution_clock::now();
+        f.close();
+        long long moves = (1LL << n) - 1;
+        long long ms = duration_cast<milliseconds>(end - start).count();
+        time_file << n << "\t" << ms << "\t" << moves << "\n";
+        cout << "n = " << n << " done (" << ms << " ms, " << moves << " moves)\n";
+    }
+    time_file.close();
+    cout << "Files created: hanoi_3.txt, hanoi_5.txt, hanoi_10.txt, hanoi_15.txt, hanoi_20.txt\n";
+    cout << "Time report saved in hanoi_time.txt";
+}
