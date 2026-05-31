@@ -119,3 +119,206 @@ int main() {
     cout << "Files created: hanoi_3.txt, hanoi_5.txt, hanoi_10.txt, hanoi_15.txt, hanoi_20.txt\n";
     cout << "Time report saved in hanoi_time.txt";
 }
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    LAB05-B1 (a)
+#include <cassert>
+using namespace std;
+long long square_sum(int n) {
+    if (n <= 0) {
+        return 0;
+    }
+    return (long long)n * n + square_sum(n - 1);
+}
+void asserts() {
+    assert(square_sum(0) == 0);
+    assert(square_sum(1) == 1);
+    assert(square_sum(2) == 5);
+    assert(square_sum(3) == 14);
+    assert(square_sum(5) == 55);
+    assert(square_sum(10) == 385);
+    assert(square_sum(-5) == 0);
+    cout << "SUCCESS!" << endl;
+}
+int main() {
+    asserts();
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    LAB05-B1 (b and c)
+using namespace std;
+void print_square(int n, int i) {
+    if (i > n) {
+        return;
+    }
+        cout << i * i << " ";
+        print_square(n, i+1);
+    if (i < n) {
+        cout << i * i << " ";
+    }
+}
+int main() {
+    int n;
+    cout << "Введите n: ";
+    cin >> n;
+    cout << "Квадраты от 1 до " << n << ": ";
+    print_square(n,1);
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    LAB05-B2  
+using namespace std;
+void rec_triangle(int n, int current = 1) {
+    if (current > n + 2) {
+        return;
+    }
+    int len;
+    if (current == 1) {
+        len = 1;
+    }
+    else if (current <= n + 2) {
+        len = current;
+    }
+    for (int i = 1; i <= len; i++) {
+        cout << (i == 1 || i == len ? '*' : '+');
+    }
+    cout << endl;
+    rec_triangle(n, current + 1);
+}
+int main() {
+    int n;
+    cout << "Введите n: ";
+    cin >> n;
+    rec_triangle(n);
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .        .    LAB05-B3 (a)
+#include <cassert>
+using namespace std;
+string to_hex(int n) {
+    const string digits = "0123456789ABCDEF";
+    if (n < 16) {
+        return string(1, digits[n]);
+    }
+    return to_hex(n / 16) + digits[n % 16];
+}
+void test() {
+    assert(to_hex(1) == "1");
+    assert(to_hex(10) == "A");
+    assert(to_hex(77) == "4D");
+    assert(to_hex(1031) == "407");
+    cout << "SUCCESS!" << endl;
+}
+int main() {
+    test();
+    int n;
+    cout << "Введите число: ";
+    cin >> n;
+    cout << "0x" << to_hex(n) << endl;
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    .    .    LAB05-B3 (b)
+#include <cassert>
+#include <string>
+using namespace std;
+char bin4_to_hex(const string& s) {
+    int val = (s[0]-'0')*8 + (s[1]-'0')*4 + (s[2]-'0')*2 + (s[3]-'0')*1;
+    return val < 10 ? '0' + val : 'A' + (val - 10);
+}
+string bin_to_hex(const string& s) {
+    if (s.empty()) return "";
+    if (s.length() == 4) return string(1, bin4_to_hex(s));
+    return bin_to_hex(s.substr(0, 4)) + bin_to_hex(s.substr(4));
+}
+
+string bin_to_hex_padded(const string& s) {
+    int pad = (4 - s.length() % 4) % 4;
+    return bin_to_hex(string(pad, '0') + s);
+}
+
+void test() {
+    assert(bin_to_hex_padded("1") == "1");
+    assert(bin_to_hex_padded("110") == "6");
+    assert(bin_to_hex_padded("1100110") == "66");
+    assert(bin_to_hex_padded("10010011101110") == "24EE");
+    assert(bin_to_hex_padded("100111000100") == "9C4");
+    cout << "SUCCESS" << endl;
+}
+
+int main() {
+    test();
+    string s;
+    cout << "Введите бинарную строку: ";
+    cin >> s;
+    cout << "0x" << bin_to_hex_padded(s) << endl;
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    LAB05-B4
+#include <vector>
+#include <cassert>
+#include <climits>
+using namespace std;
+int rec_min(const vector<int>& a, int i) {
+    return i == 0 ? a[0] : min(a[i], rec_min(a, i - 1));
+}
+int rec_min(const vector<int>& a) {
+    return a.empty() ? INT_MAX : rec_min(a, a.size() - 1);
+}
+void test() {
+    assert(rec_min({5,2,8,1,9,3}) == 1);
+    assert(rec_min({-5,-2,-8,-1,-9,-3}) == -9);
+    assert(rec_min({7,7,7,7,7,7}) == 7);
+    assert(rec_min({10,20,30,40,50,0}) == 0);
+    assert(rec_min({0,10,20,30,40,50}) == 0);
+    assert(rec_min({3,5,3,8,3,2}) == 2);
+    cout << "SUCCESS!" << endl;
+}
+int main() {
+    test();
+    vector<int> arr = {15, 7, 23, 4, 42, 8};
+    cout << "Минимум: " << rec_min(arr) << endl;
+}
+
+
+#include <iostream>    //    .    .    .    .    .    .    .    .    .    .    LAB05-B5
+#include <fstream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+string rand_text(int len) {
+    string s = "";
+    for (int i = 0; i < len; i++) {
+        char c;
+        int r = rand() % 3;
+        if (r == 0) c = 'a' + rand() % 26;
+        else if (r == 1) c = 'A' + rand() % 26;
+        else c = '0' + rand() % 10;
+        s += c;
+    }
+    return s;
+}
+
+void cringe_virus(int k) {
+    if (k <= 0) {
+        return;
+    }
+    string name = "click_me_" + to_string(k) + ".txt";
+    int len = rand() % 101;
+    string text = rand_text(len);
+    ofstream f(name);
+    f << text;
+    f.close();
+    cout << "Создан: " << name << " (" << len << " символов)" << endl;
+    cringe_virus(k - 1);
+}
+int main() {
+    srand(time(0));
+    int k;
+    cout << "Введите число: ";
+    cin >> k;
+    cringe_virus(k);
+}
