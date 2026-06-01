@@ -1,0 +1,29 @@
+.text
+main:
+	la $s6, A # $s6 = A
+	la $s7, B # $s7 = B
+	lw $s2, i # $s2 = i
+	lw $s3, j # $s3 = j
+	lw $s0, x # $s0 = x
+	lw $s1, y # $s1 = y
+	sll $t0, $s2, 2 # $t0 = i * 4
+	sll $t1, $s3, 2 # $t1 = j * 4
+	add $t2, $t0, $s7 # $t2 = B[i]
+	add $t3, $t1, $s7 # $t3 = B[j]
+	lw $t0, 0($t2) # $t0 = B[i]
+	lw $t1, 0($t3) # $t1 = B[j]
+	sub $t0, $t0, $t1 # $t0 = B[i] - B[j]
+	sll $t0, $t0, 2 # $t0 = (B[i] - B[j]) * 4
+	add $t0, $t0, $s6 # $t0 = A[B[i] - B[j]]
+	sra $t2, $s0, 1 # $t2 = x >> 1
+	sra $t3, $s1, 3 # $t3 = y >> 3
+	add $t2, $t2, $t3 # $t2 = (x >> 1) + (y >> 3)
+	sw $t2, 0($t0)
+.data
+A: .word ...#какой-то массив
+B: .word ...#какой-то массив
+i: .word 5
+j: .word 2
+x: .word 10
+y: .word 20
+A[B[i] - B[j]] = (x >> 1) + (y >> 3)

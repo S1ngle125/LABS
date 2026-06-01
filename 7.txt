@@ -1,0 +1,25 @@
+7.1	.	.	.	.	.	.	.	.	.	.	.	.	.	.
+(a)
+clear $t0 # $t0 = 0
+li $t2, big # $t2 = big
+ble $t1, $t2, L # if ($t1<=$t2) goto L
+nop # nothing happens
+(a)
+xor $t0, $t0, $t0
+lui $t2, upper(big) # загружаем старшие 16 бит
+ori $t2, $t2, lower(big) # добавляем младшие 16 бит
+slt $at, $t2, $t1 # $at = 1, if $t2 < $t1
+beq $at, $zero, L # if $t1 <= $t2, goto L
+add $zero, $zero, $zero
+(b)
+bgt $t1, $t2, L # if($t1>$t2) goto L
+bge $t1, $t2, L # if($t1>=$t2) goto L
+addi $t0, $t1, big # $t0 = $t1 + big
+(b)
+slt $at, $t2, $t1 # $at = 1 if $t2 < $t1
+bne $at, $zero, L # if $t1 > $t2, goto L
+slt $at, $t1, $t2 # $at = 1 if $t1 < $t2
+beq $at, $zero, L # if $t1 >= $t2, goto L
+lui $at, upper(big) # загружаем старшие 16 бит
+ori $at, $at, lower(big) # $at = big
+add $t0, $t1, $at # $t0 = $t1 + big
