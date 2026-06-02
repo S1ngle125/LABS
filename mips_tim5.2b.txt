@@ -1,0 +1,25 @@
+5.2b	.	.	.	.	.	.	.	.	.	.	.	.
+addiu $t1, $zero, 130
+I-type, opcode(addiu) = 9 = 0x9, rs($zero) = 0, rt($t1) = 9 = 0x9, imm = 130 = 0x82
+001001 00000 01001 0000000010000010
+0x24090082
+sub $t2, $t0, $t1
+R-type, opcode = 0, rs($t0) = 8 = 0x8, rt($t1) = 9 = 0x9, rd($t2) = 10 = 0xA, shamt = 0, funct(sub) = 34 = 0x22
+000000 01000 01001 01010 00000 100010
+0x01095022
+sra $t2, $t2, 2
+R-type, opcode = 0, rs = 0, rt($t2) = 10 = 0xA, rd($t2) = 10 = 0xA, shamt = 2 = 0x2, funct(sra) = 3 = 0x3
+0000 0000 0000 1010 0101 0000 1000 0011
+0x000A5083 -(+)
+mult $t0, $t1
+R-type, opcode = 0, rs($t0) = 8 = 0x8, rt($t1) = 9 = 0x9, rd = 0, shamt = 0, funct(mult) = 24 = 0x18
+000000 01000 01001 00000 00000 011000
+0x01090018
+mflo $a0
+R-type, opcode = 0, rs = 0, rt = 0, rd($a0) = 4 = 0x4, shamt = 0, funct(mflo) = 18 = 0x12
+000000 00000 00000 00100 00000 010010
+0x00002012 -(+)
+ori $v0, $zero, 1
+I-type, opcode(ori) = 13 = 0xD, rs($zero) = 0, rt($v0) = 2 = 0x2, imm = 1 = 0x1
+001101 00000 00010 0000000000000001
+0x34020001
