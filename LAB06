@@ -1,1 +1,416 @@
+#include <iostream>  //  .  .  .  .  .  .  .  .  LAB06-A2
+#include <fstream>
+#include <vector>
+#include <random>
+#include <ctime>
+using namespace std;
+bool check_sorted(const vector<int> &a, bool increasing) {
+    for (size_t i = 1; i < a.size(); i++) {
+        if (increasing) {
+            if (a[i] < a[i-1]) return false;
+        } else {
+            if (a[i] > a[i-1]) return false;
+        }
+    }
+    return true;
+}
+void generate_test(const string &filename, int sizes[], int n, int minn, int maxx) {
+    mt19937 gen(time(0));
+    uniform_int_distribution<int> dist(minn, maxx);
+    ofstream out(filename);
+    for (int i = 0; i < n; i++) {
+        out << sizes[i] << endl;
+        for (int j = 0; j < sizes[i]; j++) {
+            out << dist(gen);
+            if (j != sizes[i] - 1) out << " ";
+        }
+        out << endl;
+    }
+    out.close();
+}
+int main() {
+    int sizes1[] = {10, 100, 1000, 5000, 10000};
+    generate_test("multitest_1.txt", sizes1, 5, -1000, 1000);
+    int sizes2[] = {100000, 500000, 1000000, 5000000, 10000000};
+    generate_test("multitest_2.txt", sizes2, 5, -1000, 1000);
+    cout << "файлы созданы!" << endl;
+    vector<int> test1 = {1, 2, 3, 4, 5};
+    vector<int> test2 = {5, 4, 3, 2, 1};
+    cout << "test1 sorted inc: " << check_sorted(test1, true) << endl;
+    cout << "test2 sorted dec: " << check_sorted(test2, false) << endl;
+}
 
+
+
+#include <iostream>  //  .  .  .  .  .  .  .  .  .  .  .    .  .  LAB06-A2-3-4
+#include <fstream>
+#include <vector>
+#include <random>
+#include <chrono>
+#include <algorithm>
+using namespace std;
+bool check_sorted(const vector<int> &a, bool increasing) {
+    for (size_t i = 1; i < a.size(); ++i) {
+        if (increasing) {
+            if (a[i] < a[i-1]) return false;
+        } else {
+            if (a[i] > a[i-1]) return false;
+        }
+    }
+    return true;
+}
+void bubble_sort_alternative(vector<int> &arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = n - 1; j > i; --j) {
+            if (arr[j] < arr[j-1]) {
+                swap(arr[j], arr[j-1]);
+            }
+        }
+    }
+}
+void insertion_sort_descending(vector<int> &arr) {
+    int n = arr.size();
+    for (int i = 1; i < n; ++i) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] < key) {
+            arr[j + 1] = arr[j];
+            --j;
+        }
+        arr[j + 1] = key;
+    }
+}
+void generate_tests() {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(-1000, 1000);
+    vector<int> sizes1 = {10, 100, 1000, 5000, 10000};
+    ofstream out1("multitest_1.txt");
+    for (int size : sizes1) {
+        out1 << size << "\n";
+        for (int i = 0; i < size; ++i) {
+            out1 << dist(gen);
+            if (i != size - 1) out1 << " ";
+        }
+        out1 << endl;
+    }
+    out1.close();
+    vector<int> sizes2 = {100000, 500000, 1000000, 5000000, 10000000};
+    ofstream out2("multitest_2.txt");
+    for (int size : sizes2) {
+        out2 << size << "\n";
+        for (int i = 0; i < size; ++i) {
+            out2 << dist(gen);
+            if (i != size - 1) out2 << " ";
+        }
+        out2 << endl;
+    }
+    out2.close();
+    cout << "файлы multitest_1.txt и multitest_2.txt созданы.\n";
+}
+vector<vector<int>> read_sequences(const string &filename) {
+    vector<vector<int>> sequences;
+    ifstream in(filename);
+    if (!in.is_open()) {
+        cerr << "не удалось открыть " << filename << endl;
+        return sequences;
+    }
+    int size;
+    while (in >> size) {
+        vector<int> arr(size);
+        for (int i = 0; i < size; ++i) {
+            in >> arr[i];
+        }
+        sequences.push_back(arr);
+    }
+    return sequences;
+}
+void test_sorting(const string &sort_name, 
+                  void (*sort_func)(vector<int>&),
+                  vector<vector<int>> sequences,
+                  bool increasing_check) {
+    cout << endl;                  
+    cout << "===== " << sort_name << " =====";
+    cout << endl;
+    for (size_t idx = 0; idx < sequences.size(); ++idx) {
+        vector<int> arr = sequences[idx];
+        sort_func(arr);
+        int size = arr.size();
+        bool sorted = check_sorted(arr, increasing_check);
+        cout << "Размер: " << size;
+        cout << "  Сортировка: " << (sorted ? "OK" : "FAIL");
+        if (size <= 20) {
+            cout << " | Результат: ";
+            for (int i = 0; i < min(10, size); ++i) cout << arr[i] << " ";
+            if (size > 10) cout << "...";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    generate_tests();
+    vector<vector<int>> sequences = read_sequences("multitest_1.txt");
+    if (sequences.empty()) {
+        cerr << "Нет данных для тестирования.\n";
+    }
+    test_sorting("Альт Bubble Sort (неубывание, мин. влево)",
+                 bubble_sort_alternative, sequences, true);
+    test_sorting("Insertion Sort (невозрастание, убывание)",
+                 insertion_sort_descending, sequences, false);
+}
+
+
+#include <iostream>  //  .  .  .  .  .  .  .  .  .  ..  .  .  .  .  .  LAB06-B2
+#include <fstream>
+#include <vector>
+#include <chrono>
+#include <random>
+#include <algorithm>
+#include <ctime>
+using namespace std;
+using namespace chrono;
+bool check_sorted(const vector<int> &a, bool increasing) {
+    for (size_t i = 1; i < a.size(); ++i) {
+        if (increasing) {
+            if (a[i] < a[i-1]) return false;
+        } else {
+            if (a[i] > a[i-1]) return false;
+        }
+    }
+    return true;
+}
+class SortingChampion {
+public:
+    static void selection_sort(vector<int> &a) {
+        int n = a.size();
+        for (int i = 0; i < n-1; i++) {
+            int min_idx = i;
+            for (int j = i+1; j < n; j++)
+                if (a[j] < a[min_idx]) min_idx = j;
+            swap(a[i], a[min_idx]);
+        }
+    }
+    static void bubble_sort(vector<int> &a) {
+        int n = a.size();
+        for (int i = 0; i < n-1; i++)
+            for (int j = 0; j < n-i-1; j++)
+                if (a[j] > a[j+1])
+                    swap(a[j], a[j+1]);
+    }
+    static void insertion_sort(vector<int> &a) {
+        int n = a.size();
+        for (int i = 1; i < n; i++) {
+            int key = a[i];
+            int j = i-1;
+            while (j >= 0 && a[j] > key) {
+                a[j+1] = a[j];
+                j--;
+            }
+            a[j+1] = key;
+        }
+    }
+    static void merge_sort(vector<int> &a) {
+        merge_sort_rec(a, 0, a.size()-1);
+    }
+    static void quick_sort(vector<int> &a) {
+        quick_sort_rec(a, 0, a.size()-1);
+    }
+    static void randomized_quick_sort(vector<int> &a) {
+        randomized_quick_sort_rec(a, 0, a.size()-1);
+    }
+private:
+    static void merge_sort_rec(vector<int> &a, int l, int r) {
+        if (l >= r) return;
+        int m = (l + r) / 2;
+        merge_sort_rec(a, l, m);
+        merge_sort_rec(a, m+1, r);
+        
+        vector<int> temp(r-l+1);
+        int i = l, j = m+1, k = 0;
+        while (i <= m && j <= r)
+            temp[k++] = (a[i] <= a[j]) ? a[i++] : a[j++];
+        while (i <= m) temp[k++] = a[i++];
+        while (j <= r) temp[k++] = a[j++];
+        
+        for (int p = 0; p < k; p++)
+            a[l+p] = temp[p];
+    }
+    static void quick_sort_rec(vector<int> &a, int l, int r) {
+        if (l >= r) return;
+        int pivot = a[(l+r)/2];
+        int i = l, j = r;
+        while (i <= j) {
+            while (a[i] < pivot) i++;
+            while (a[j] > pivot) j--;
+            if (i <= j) swap(a[i++], a[j--]);
+        }
+        quick_sort_rec(a, l, j);
+        quick_sort_rec(a, i, r);
+    }
+    static void randomized_quick_sort_rec(vector<int> &a, int l, int r) {
+        if (l >= r) return;
+        static mt19937 gen(time(0));
+        uniform_int_distribution<int> dist(l, r);
+        int rand_idx = dist(gen);
+        swap(a[rand_idx], a[(l+r)/2]);
+        quick_sort_rec(a, l, r);
+    }
+};
+vector<vector<int>> read_sequences(const string &filename) {
+    vector<vector<int>> sequences;
+    ifstream in(filename);
+    if (!in.is_open()) {
+        cerr << "не удалось открыть " << filename << endl;
+        return sequences;
+    }
+    int size;
+    while (in >> size) {
+        vector<int> arr(size);
+        for (int i = 0; i < size; ++i) {
+            in >> arr[i];
+        }
+        sequences.push_back(arr);
+    }
+    return sequences;
+}
+void write_report(const string &filename, const vector<pair<string, vector<long long>>> &results,
+                  const vector<int> &sizes) {
+    ofstream out(filename);
+    out << "Алгоритм";
+    for (int s : sizes) out << "\t" << s;
+    out << endl;
+    
+    for (const auto &algo : results) {
+        out << algo.first;
+        for (long long t : algo.second) out << "\t" << t;
+        out << endl;
+    }
+    out.close();
+}
+int main() {
+    vector<vector<int>> small = read_sequences("multitest_1.txt");
+    vector<vector<int>> large = read_sequences("multitest_2.txt");
+    if (small.empty() || large.empty()) {
+        cerr << "ошибка: файлы multitest_1.txt или multitest_2.txt не найдены" << endl;
+    }
+    
+    vector<int> sizes_small = {10, 100, 1000, 5000, 10000};
+    vector<int> sizes_large = {100000, 500000, 1000000, 5000000, 10000000};
+    vector<pair<string, void(*)(vector<int>&)>> algos1 = {
+        {"Selection", SortingChampion::selection_sort},
+        {"Bubble", SortingChampion::bubble_sort},
+        {"Insertion", SortingChampion::insertion_sort},
+        {"Merge", SortingChampion::merge_sort},
+        {"Quick", SortingChampion::quick_sort},
+        {"RandomizedQuick", SortingChampion::randomized_quick_sort}
+    };
+    vector<pair<string, void(*)(vector<int>&)>> algos2 = {
+        {"Merge", SortingChampion::merge_sort},
+        {"Quick", SortingChampion::quick_sort},
+        {"RandomizedQuick", SortingChampion::randomized_quick_sort}
+    };
+    vector<pair<string, vector<long long>>> results1;
+    for (auto &algo : algos1) {
+        vector<long long> times;
+        for (size_t i = 0; i < small.size(); i++) {
+            vector<int> copy = small[i];
+            auto start = high_resolution_clock::now();
+            algo.second(copy);
+            auto end = high_resolution_clock::now();
+            times.push_back(duration_cast<microseconds>(end - start).count());
+            if (!check_sorted(copy, true))
+                cout << "Ошибка в " << algo.first << " на размере " << sizes_small[i] << "\n";
+        }
+        results1.push_back({algo.first, times});
+    }
+    write_report("report_1.txt", results1, sizes_small);
+    vector<pair<string, vector<long long>>> results2;
+    for (auto &algo : algos2) {
+        vector<long long> times;
+        for (size_t i = 0; i < large.size(); i++) {
+            vector<int> copy = large[i];
+            auto start = high_resolution_clock::now();
+            algo.second(copy);
+            auto end = high_resolution_clock::now();
+            times.push_back(duration_cast<milliseconds>(end - start).count()); // в миллисекундах
+            if (!check_sorted(copy, true))
+                cout << "Ошибка в " << algo.first << " на размере " << sizes_large[i] << "\n";
+        }
+        results2.push_back({algo.first, times});
+    }
+    write_report("report_2.txt", results2, sizes_large);
+    cout << "Отчёты сохранены в: report_1.txt, report_2.txt" << endl;
+}
+
+
+#include <iostream>  //  .  .  ..  .  .  .  .  .  .    .  LAB06-B3
+#include <vector>
+#include <algorithm>
+using namespace std;
+int main() {
+    int n1, n2;
+    cout << "Введите первый размер: ";
+    cin >> n1;
+    cout << "Введите числа: ";
+    vector<int> a(n1);
+    for (int i = 0; i < n1; i++) {
+        cin >> a[i];
+    }
+    cout << "Введите второй размер: ";
+    cin >> n2;
+    cout << "Введите числа: ";
+    vector<int> b(n2);
+    for (int i = 0; i < n2; i++) {
+        cin >> b[i];
+    }
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+    auto last1 = unique(a.begin(), a.end());
+    auto last2 = unique(b.begin(), b.end());
+    a.erase(last1, a.end());
+    b.erase(last2, b.end());
+    if (a == b) {
+        cout << "YES" << endl;
+    } else {
+        cout << "NO" << endl;
+    }
+}
+
+
+#include <iostream>  //  .  .  .  .  ..  .  .  .  .  LAB06-B4
+#include <vector>
+#include <algorithm>
+using namespace std;
+int digit_sum(int n) {
+    int sum = 0;
+    while (n > 0) {
+        sum += n % 10;
+        n /= 10;
+    }
+    return sum;
+}
+
+int main() {
+    int n;
+    cout << "Введите размер: ";
+    cin >> n;
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+    stable_sort(arr.begin(), arr.end(), [](int a, int b) {
+        int sum_a = digit_sum(a);
+        int sum_b = digit_sum(b);
+        if (sum_a != sum_b) {
+            return sum_a < sum_b;
+        }
+        return false;
+    });
+    for (int i = 0; i < n; i++) {
+        cout << arr[i];
+        if (i != n - 1) cout << " ";
+    }
+    cout << endl;
+}
